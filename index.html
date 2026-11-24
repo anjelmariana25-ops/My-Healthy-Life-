@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17452f"><title>MY HEALTHY LIFE</title>
+<style>
+:root{--green:#17452f;--lime:#b9e6c6;--bg:#f3f7f4;--ink:#18251d;--muted:#68766d;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--green);color:white;padding:22px 18px 28px;border-radius:0 0 24px 24px}
+header small{color:#d5eadb;letter-spacing:1.5px}h1{margin:6px 0;font-size:25px}header p{margin:0;color:#d5eadb}
+main{max-width:760px;margin:auto;padding:16px 14px 90px}.panel{background:white;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 3px 15px #153e2910}
+h2{font-size:18px;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e3ebe5;display:flex;justify-content:space-around;padding:9px 3px calc(9px + env(safe-area-inset-bottom));z-index:3}
+nav button{border:0;background:none;color:var(--muted);font-size:12px;padding:5px}
+nav button.active{color:var(--green);font-weight:700}
+button,.btn{border:0;border-radius:11px;background:var(--green);color:white;padding:11px 14px;font-weight:650;cursor:pointer}
+button.secondary{background:#e8f2eb;color:var(--green)}input,select{width:100%;padding:11px;border:1px solid #d8e2db;border-radius:10px;margin:5px 0 10px;background:white;color:var(--ink)}
+label{font-size:13px;font-weight:650}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.task{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #edf1ee}.task:last-child{border:0}.task input{width:19px;margin:0}.task.done span{text-decoration:line-through;color:#829087}
+.stat{background:#eef6f0;border-radius:13px;padding:12px;flex:1}.stat strong{font-size:22px;display:block;color:var(--green)}
+.hidden{display:none!important}.pill{display:inline-block;background:#e8f2eb;color:var(--green);padding:5px 9px;border-radius:99px;font-size:12px}
+#auth{max-width:440px;margin:28px auto;padding:16px}#app{display:none}
+</style>
+</head>
+<body>
+<section id="auth" class="panel">
+  <div style="text-align:center;padding:12px"><div style="font-size:32px">🌿</div><h1 style="color:#17452f">MY HEALTHY LIFE</h1><p class="muted">A healthier routine, your own way.</p><b>MORA &amp; NASHRULLL</b></div>
+  <h2 id="authTitle">Buat akun demo</h2>
+  <label id="nameLabel">Nama</label><input id="name" placeholder="Nama kamu">
+  <label>Email</label><input id="email" type="email" placeholder="nama@email.com">
+  <label id="passLabel">Kata sandi demo</label><input id="pass" type="password" placeholder="Minimal 4 karakter">
+  <button style="width:100%" onclick="register()">Daftar / Masuk</button>
+  <p class="muted">Demo ini menyimpan profil hanya di perangkat ini. Belum ada server akun atau sinkronisasi online.</p>
+  <button class="secondary" style="width:100%" onclick="toggleLang()">Bahasa / Language: <span id="langText">Indonesia</span></button>
+</section>
+<div id="app">
+<header><small>MY HEALTHY LIFE</small><h1 id="hello">Halo!</h1><p id="dateLine"></p></header>
+<main>
+<section id="home" class="view">
+ <div class="panel"><div class="row"><div><span class="pill" id="todayTag">HARI INI</span><h2 id="welcome">Mulai dari langkah kecil 🌱</h2></div><div style="text-align:right;font-size:28px">💚</div></div><p class="muted" id="motivation">Konsisten lebih penting daripada sempurna.</p></div>
+ <div class="row"><div class="stat"><strong id="doneCount">0/0</strong><span class="muted">Tugas selesai</span></div><div class="stat"><strong id="waterCount">0</strong><span class="muted">Gelas air</span></div></div>
+ <div class="panel"><h2>Checklist hari ini</h2><div id="homeTasks"></div></div>
+ <div class="panel"><h2>Air minum</h2><p class="muted">Catat minum secara santai sepanjang hari.</p><div class="row"><button onclick="addWater()">+ Tambah 1 gelas</button><button class="secondary" onclick="resetWater()">Atur ulang</button></div></div>
+</section>
+<section id="calendar" class="view hidden"><div class="panel"><h2>Jadwal saya</h2><p class="muted">Atur kegiatanmu sesuai kehidupanmu sendiri.</p><div class="row"><div><label>Waktu</label><input id="taskTime" type="time" value="07:00"></div><div><label>Kegiatan</label><input id="taskName" placeholder="Contoh: Belajar"></div></div><button onclick="addTask()">Tambah kegiatan</button><div id="scheduleList" style="margin-top:12px"></div></div></section>
+<section id="tasks" class="view hidden"><div class="panel"><h2>Checklist</h2><div id="allTasks"></div></div></section>
+<section id="progress" class="view hidden"><div class="panel"><h2>Progress hari ini</h2><div class="stat"><strong id="progressPct">0%</strong><span class="muted">Checklist selesai</span></div><p class="muted">Setiap langkah kecil tetap berarti. Progress dihitung dari checklist hari ini.</p></div></section>
+<section id="profile" class="view hidden"><div class="panel"><h2>Profil</h2><p id="profileName"></p><p class="muted" id="profileEmail"></p><label>Template awal</label><select id="template" onchange="saveTemplate()"><option>Custom</option><option>Student</option><option>Boarding School</option><option>University</option><option>Work</option></select><label>Language / Bahasa</label><button class="secondary" onclick="toggleLang()">Ganti bahasa / Switch language</button><p class="muted">Created by MORA &amp; NASHRULLL</p><button onclick="logout()">Keluar</button></div></section>
+</main>
+<nav>
+<button class="active" onclick="show('home',this)">⌂<br>Home</button><button onclick="show('calendar',this)">▦<br>Calendar</button><button onclick="show('tasks',this)">☑<br>Tasks</button><button onclick="show('progress',this)">▥<br>Progress</button><button onclick="show('profile',this)">◉<br>Profile</button>
+</nav>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let user=JSON.parse(localStorage.getItem('mhl_user')||'null'), lang=localStorage.getItem('mhl_lang')||'id';
+let tasks=JSON.parse(localStorage.getItem('mhl_tasks')||'[]'), water=Number(localStorage.getItem('mhl_water')||0);
+if(!tasks.length)tasks=[{time:'06:00',name:'Bangun dan bersiap',done:false},{time:'07:00',name:'Sarapan',done:false},{time:'16:00',name:'Istirahat setelah aktivitas',done:false},{time:'20:00',name:'Persiapan tidur',done:false}];
+function save(){localStorage.setItem('mhl_tasks',JSON.stringify(tasks));localStorage.setItem('mhl_water',water);render()}
+function register(){let name=$('name').value.trim(),email=$('email').value.trim(),pass=$('pass').value;if(!email||pass.length<4){alert('Isi email dan kata sandi minimal 4 karakter.');return}if(!user&&!name){alert('Isi nama terlebih dahulu.');return}user={name:name||user?.name||'Pengguna',email};localStorage.setItem('mhl_user',JSON.stringify(user));start()}
+function start(){if(!user)return;$('auth').style.display='none';$('app').style.display='block';$('hello').textContent=(lang==='id'?'Halo, ':'Hello, ')+user.name+'!';$('profileName').textContent=user.name;$('profileEmail').textContent=user.email;$('dateLine').textContent=new Date().toLocaleDateString(lang==='id'?'id-ID':'en-US',{weekday:'long',day:'numeric',month:'long',year:'numeric'});render()}
+function logout(){user=null;localStorage.removeItem('mhl_user');$('app').style.display='none';$('auth').style.display='block'}
+function toggleLang(){lang=lang==='id'?'en':'id';localStorage.setItem('mhl_lang',lang);$('langText').textContent=lang==='id'?'Indonesia':'English';if(user)start();else{$('authTitle').textContent=lang==='id'?'Buat akun demo':'Create demo account';$('nameLabel').textContent=lang==='id'?'Nama':'Name';$('passLabel').textContent=lang==='id'?'Kata sandi demo':'Demo password'}}
+function show(id,btn){document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function addTask(){let time=$('taskTime').value,name=$('taskName').value.trim();if(!name)return alert('Tulis nama kegiatan.');tasks.push({time,name,done:false});tasks.sort((a,b)=>a.time.localeCompare(b.time));$('taskName').value='';save()}
+function toggleTask(i){tasks[i].done=!tasks[i].done;save()}
+function removeTask(i){tasks.splice(i,1);save()}
+function addWater(){water++;save()}function resetWater(){water=0;save()}
+function saveTemplate(){localStorage.setItem('mhl_template',$('template').value)}
+function render(){let list=tasks.map((t,i)=>`<div class="task ${t.done?'done':''}"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${i})"><span style="flex:1"><b>${t.time}</b> · ${escapeHtml(t.name)}</span><button class="secondary" onclick="removeTask(${i})">×</button></div>`).join('')||'<p class="muted">Belum ada kegiatan.</p>';$('homeTasks').innerHTML=list;$('allTasks').innerHTML=list;$('scheduleList').innerHTML=list;let done=tasks.filter(t=>t.done).length;$('doneCount').textContent=done+'/'+tasks.length;$('waterCount').textContent=water;$('progressPct').textContent=(tasks.length?Math.round(done/tasks.length*100):0)+'%';$('template').value=localStorage.getItem('mhl_template')||'Custom'}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+if(user)start();else toggleLang();
+</script>
+</body></html>
